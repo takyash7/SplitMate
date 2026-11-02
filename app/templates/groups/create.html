@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Create group · SplitMate{% endblock %}
+{% block content %}
+<div class="form-card mx-auto"><h1 class="h3 fw-bold">Create a group</h1><p class="text-muted">Start a trip, home, office or custom expense group.</p>
+<form method="post">
+<label class="form-label">Group name</label><input class="form-control mb-3" name="name" maxlength="120" placeholder="e.g. Goa Trip 2026" required>
+<label class="form-label">Group type</label><select class="form-select mb-3" name="group_type"><option>Trip</option><option>Home</option><option>Office</option><option>Friends</option><option>Custom</option></select>
+<label class="form-label">Description (optional)</label><textarea class="form-control mb-3" name="description" rows="3"></textarea>
+<button class="btn btn-primary">Create group</button>
+</form></div>
+{% endblock %}

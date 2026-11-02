@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}My groups · SplitMate{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4"><div><h1 class="h2 fw-bold">My groups</h1><p class="text-muted">Each group has its own members, expenses and balances.</p></div><a class="btn btn-primary" href="{{ url_for('groups.create') }}">+ New group</a></div>
+<div class="row g-3">{% for group in groups %}<div class="col-md-6 col-xl-4"><a class="group-card-link" href="{{ url_for('groups.detail', group_id=group.id) }}"><div class="group-card"><span class="badge badge-soft">{{ group.group_type }}</span><h3 class="h5 fw-bold mt-3">{{ group.name }}</h3><p class="text-muted mb-0">{{ group.members|length }} members · {{ group.expenses|length }} expenses</p></div></a></div>{% else %}<div class="col-12"><div class="empty-state">You haven't joined any groups yet.</div></div>{% endfor %}</div>
+{% endblock %}

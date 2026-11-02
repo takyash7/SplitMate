@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Add expense · SplitMate{% endblock %}
+
+{% block content %}
+
+<div class="form-card wide-card mx-auto">
+
+    <h1 class="h3 fw-bold">Add an expense</h1>
+
+    <p class="text-muted">
+        Group: {{ group.name }}. Choose only the people who shared this expense.
+    </p>
+
+    <form
+        method="POST"
+        action="{{ url_for('expenses.add', group_id=group.id) }}"
+        id="expense-form"
+        enctype="multipart/form-data"
+    >
+
+        <div class="row g-3">
+
+            <!-- Expense Name -->
+            <div class="col-md-8">
+                <label class="form-label">Expense name</label>
+                <input
+                    class="form-control"
+                    name="title"
+                    placeholder="e.g. Dinner"
+                    required
+                    maxlength="160"
+                >
+            </div>
+
+            <!-- Amount -->
+            <div class="col-md-4">
+                <label class="form-label">Amount (₹)</label>
+                <input
+                    class="form-control"
+                    name="amount"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    required
+                >
+            </div>
+
+            <!-- Paid By -->
+            <div class="col-md-6">
+                <label class="form-label">Paid by</label>
+
+                <select class="form-select" name="paid_by_id">
+
+                    {% for member in group.members %}
+                    <option
+                        value="{{ member.id }}"
+                        {% if member.id == current_user.id %}selected{% endif %}
+                    >
+                        {{ member.name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <!-- Category -->
+            <div class="col-md-6">
+                <label class="form-label">Category</label>
+
+                <select class="form-select" name="category">
+
+                    {% for cat in [
+                        'Food', 'Travel', 'Hotel', 'Shopping',
+                        'Transport', 'Utilities', 'Entertainment', 'Other'
+                    ] %}
+                    <option value="{{ cat }}">{{ cat }}</option>
+                    {% endfor %}
+
+                </select>
+            </div>
+
+            <!-- Participants -->
+            <div class="col-12">
+
+                <label class="form-label">Split between</label>
+
+                <div class="participant-grid">
+
+                    {% for member in group.members %}
+
+                    <label class="participant-option">
+
+                        <input
+                            type="checkbox"
+                            name="participants"
+                            value="{{ member.id }}"
+                            data-name="{{ member.name }}"
+                            checked
+                        >
+
+                        <span>{{ member.name }}</span>
+
+                    </label>
+
+                    {% endfor %}
+
+                </div>
+
+                <div class="form-text">
+                    Uncheck anyone who did not participate.
+                    The payer does not have to be a participant.
+                </div>
+
+            </div>
+
+            <!-- Split Method -->
+            <div class="col-md-6">
+
+                <label class="form-label">Split method</label>
+
+                <select
+                    class="form-select"
+                    name="split_type"
+                    id="split-type"
+                >
+                    <option value="equal">Equal split</option>
+                    <option value="exact">Exact amounts</option>
+                    <option value="percentage">Percentage</option>
+                    <option value="shares">Weighted shares</option>
+                </select>
+
+            </div>
+
+            <!-- Dynamic Split Fields -->
+            <div class="col-12" id="split-inputs" hidden>
+
+                <label class="form-label">
+                    Enter each selected member's value
+                </label>
+
+                <div id="split-fields" class="row g-2"></div>
+
+                <div class="form-text" id="split-help">
+                    Values depend on the split method selected.
+                </div>
+
+            </div>
+
+            <!-- Notes -->
+            <div class="col-12">
+
+                <label class="form-label">Notes (optional)</label>
+
+                <textarea
+                    class="form-control"
+                    name="notes"
+                    rows="2"
+                    maxlength="500"
+                ></textarea>
+
+            </div>
+
+            <div class="mb-3">
+                <label for="receipt" class="form-label">
+                    Upload Bill (Optional)
+                </label>
+
+                <input
+                    type="file"
+                    class="form-control"
+                    name="receipt"
+                    id="receipt"
+                    accept=".jpg,.jpeg,.png,.webp,.pdf"
+                >
+
+                <div class="form-text">
+                    Supported formats: JPG, PNG, WEBP, PDF. Maximum size: 10 MB.
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="col-12 d-flex gap-2">
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    id="save-expense-btn"
+                >
+                    Save expense
+                </button>
+
+                <a
+                    class="btn btn-outline-secondary"
+                    href="{{ url_for('groups.detail', group_id=group.id) }}"
+                >
+                    Cancel
+                </a>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

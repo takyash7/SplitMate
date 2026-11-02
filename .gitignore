@@ -1,0 +1,28 @@
+# Virtual environment
+venv/
+env/
+
+# Environment variables and secrets
+.env
+.venv
+*.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Flask instance
+instance/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

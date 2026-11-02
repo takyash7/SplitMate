@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · SplitMate{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div><span class="eyebrow">YOUR OVERVIEW</span><h1 class="h2 fw-bold mt-1">Dashboard</h1><p class="text-muted mb-0">All your trips and shared expenses in one place.</p></div>
+  <a class="btn btn-primary" href="{{ url_for('groups.create') }}">+ Create a group</a>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="stat-card"><span class="text-muted">You are owed</span><div class="stat-value text-success">₹{{ '%.2f'|format(total_owed) }}</div></div></div>
+  <div class="col-md-4"><div class="stat-card"><span class="text-muted">You owe</span><div class="stat-value text-danger">₹{{ '%.2f'|format(total_owing) }}</div></div></div>
+  <div class="col-md-4"><div class="stat-card"><span class="text-muted">Your groups</span><div class="stat-value">{{ group_cards|length }}</div></div></div>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-3"><h2 class="h4 fw-bold">Your groups</h2><a href="{{ url_for('groups.index') }}">View all</a></div>
+{% if group_cards %}
+<div class="row g-3">
+{% for item in group_cards %}
+<div class="col-md-6 col-xl-4"><a class="group-card-link" href="{{ url_for('groups.detail', group_id=item.group.id) }}"><div class="group-card">
+  <div class="d-flex justify-content-between"><span class="badge badge-soft">{{ item.group.group_type }}</span><span class="text-muted small">{{ item.members }} members</span></div>
+  <h3 class="h5 fw-bold mt-3">{{ item.group.name }}</h3><p class="text-muted small">{{ item.expenses }} expenses</p>
+  <div class="border-top pt-3 d-flex justify-content-between"><span class="small text-muted">Your balance</span><strong class="{{ 'text-success' if item.balance >= 0 else 'text-danger' }}">{{ '+' if item.balance > 0 else '' }}₹{{ '%.2f'|format(item.balance) }}</strong></div>
+</div></a></div>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><h3 class="h5">No groups yet</h3><p class="text-muted">Create your first group to start tracking shared expenses.</p><a class="btn btn-primary" href="{{ url_for('groups.create') }}">Create your first group</a></div>
+{% endif %}
+<div class="mt-5"><h2 class="h4 fw-bold mb-3">Recent activity</h2>
+{% if activities %}<div class="list-group">{% for activity in activities %}<div class="list-group-item activity-item"><span>{{ activity.message }}</span><small class="text-muted">{{ activity.created_at.strftime('%d %b %Y, %I:%M %p') }}</small></div>{% endfor %}</div>{% else %}<p class="text-muted">Your recent activity will appear here.</p>{% endif %}
+</div>
+{% endblock %}

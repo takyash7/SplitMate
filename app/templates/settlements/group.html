@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Settlements · SplitMate{% endblock %}
+{% block content %}
+<div class="form-card mx-auto"><h1 class="h3 fw-bold">Record a payment</h1><p class="text-muted">Group: {{ group.name }}. Record a real payment made to another member.</p>
+<form method="post">
+<label class="form-label">You paid</label><input class="form-control mb-3" value="{{ current_user.name }}" disabled>
+<label class="form-label">Paid to</label><select class="form-select mb-3" name="paid_to_id" required>{% for member in group.members if member.id != current_user.id %}<option value="{{ member.id }}">{{ member.name }}</option>{% endfor %}</select>
+<label class="form-label">Amount (₹)</label><input class="form-control mb-3" type="number" name="amount" min="0.01" step="0.01" required>
+<label class="form-label">Note (optional)</label><input class="form-control mb-3" name="note">
+<button class="btn btn-primary">Record settlement</button><a class="btn btn-outline-secondary" href="{{ url_for('groups.detail', group_id=group.id) }}">Back</a>
+</form>
+<hr><h2 class="h5 fw-bold">Current balances</h2>{% for member in group.members %}<div class="member-row"><span>{{ member.name }}</span><strong class="{{ 'text-success' if balances[member.id] >= 0 else 'text-danger' }}">₹{{ '%.2f'|format(balances[member.id]) }}</strong></div>{% endfor %}
+</div>
+{% endblock %}
